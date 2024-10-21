@@ -21,7 +21,10 @@ class _MapState extends State<MapGuide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('지도에서 혜택찾기'),
+        title: const Center(
+          child: Text('지도에서 혜택찾기',
+          style: TextStyle(fontFamily: 'PretendardLight'),),
+        ),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,

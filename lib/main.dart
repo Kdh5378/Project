@@ -62,7 +62,7 @@ class _MainPageState extends State<CardUpgoRunPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.text_snippet),
+            icon: Icon(Icons.dns),
             label: '내 카드',
           ),
           BottomNavigationBarItem(
@@ -70,13 +70,15 @@ class _MainPageState extends State<CardUpgoRunPage> {
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: Icon(Icons.content_paste_search),
             label: '분석리포트',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.lightGreen,
+        selectedItemColor: Colors.blue,
         onTap: _onItemTapped,
+        selectedLabelStyle: const TextStyle(fontFamily: 'PretendardBold'),
+        unselectedLabelStyle: const TextStyle(fontFamily: 'PretendardBold'),
       ),
     );
   }

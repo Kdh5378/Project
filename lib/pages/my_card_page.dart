@@ -29,6 +29,7 @@ class MyCardPage extends StatelessWidget {
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
+                      fontFamily: 'PretendardBold',
                     ),
                   ),
                   Text(
@@ -36,6 +37,7 @@ class MyCardPage extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 18,
+                      fontFamily: 'PretendardLight',
                     ),
                   ),
                 ],
@@ -46,7 +48,7 @@ class MyCardPage extends StatelessWidget {
               Container(
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1F2123),
+                  color: Color.fromARGB(255, 38, 72, 146),
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: Padding(
@@ -63,6 +65,7 @@ class MyCardPage extends StatelessWidget {
                               color: Colors.white,
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
+                              fontFamily: 'PretendardExtraBold',
                             ),
                           ),
                           const SizedBox(
@@ -75,6 +78,7 @@ class MyCardPage extends StatelessWidget {
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.8),
                                   fontSize: 18,
+                                  fontFamily: 'PretendardSemiBold',
                                 ),
                               ),
                             ],
@@ -84,11 +88,11 @@ class MyCardPage extends StatelessWidget {
                       Transform.scale(
                         scale: 2.2,
                         child: Transform.translate(
-                          offset: const Offset(-5, 12),
+                          offset: const Offset(-5, 0),
                           child: const Icon(
-                            Icons.card_membership,
+                            Icons.credit_card,
                             color: Colors.white,
-                            size: 50,
+                            size: 40,
                           ),
                         ),
                       )
