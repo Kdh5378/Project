@@ -37,9 +37,6 @@ class CardUpgoRunPage extends StatefulWidget {
 
 class _MainPageState extends State<CardUpgoRunPage> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
   final List<Widget> _widgetOptions = <Widget>[
     const MyCardPage(),
     const MainPage(),

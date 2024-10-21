@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
 
 class YearEndGuide extends StatefulWidget {
   const YearEndGuide({Key? key}) : super(key: key);
@@ -8,6 +11,17 @@ class YearEndGuide extends StatefulWidget {
 }
 
 class _YearEndState extends State<YearEndGuide> {
+  final TextEditingController textController = new TextEditingController();
+  var f = NumberFormat('###,###,###,###');
+  
+  var mySalary        = 60000000;
+  var tmpMySalary     = '60,000,000';
+  var myCreditAmount  = 4000000;
+  var tmpMyCredit     = '4,000,000';
+  var usedAmount      = 11000000;
+  var exessAmount     = 15000000;
+  var tmpExcessAmount = '15,000,000';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,11 +55,24 @@ class _YearEndState extends State<YearEndGuide> {
                           fontFamily: 'PretendardBold', fontSize: 18.0),
                     ),
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  Text('$tmpMySalary 원',
+                  style: const TextStyle(
+                          fontFamily: 'PretendardExtraBold', fontSize: 30.0),),
+                  TextField(
+                    controller: textController,
+                    decoration: const InputDecoration(
                         labelText: '연봉',
+                        labelStyle: TextStyle(fontFamily: 'PretendardRegular'),
                         contentPadding:
-                            EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0)),
+                            EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Color.fromARGB(255, 80, 120, 194)), // 동적 border 색상
+                              ),
+                     ),
+                     keyboardType: TextInputType.number,
+                     inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                     ],
                   ),
                   const SizedBox(
                     width: 60.0,
@@ -53,6 +80,14 @@ class _YearEndState extends State<YearEndGuide> {
                   ),
                   InkWell(
                     onTap: () {
+                      setState(() {
+                        mySalary        = int.parse(textController.text);
+                        tmpMySalary     = f.format(mySalary);
+                        exessAmount     = (mySalary*0.25) as int;
+                        myCreditAmount  = exessAmount - usedAmount;
+                        tmpMyCredit     = f.format(myCreditAmount);
+                        tmpExcessAmount = f.format(exessAmount);
+                      });
                       debugPrint('조회페이지로 이동');
                     },
                     child: Container(
@@ -87,27 +122,27 @@ class _YearEndState extends State<YearEndGuide> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
+                        const Text(
                           '앞으로',
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 17.0),
                         ),
                         Text(
-                          '4,250,000 원',
-                          style: TextStyle(
+                          '$tmpMyCredit 원',
+                          style: const TextStyle(
                               fontFamily: 'PretendardBold', fontSize: 22.0),
                         ),
-                        Text(
+                        const Text(
                           '신용카드 사용',
                           style: TextStyle(
                               fontFamily: 'PretendardBold',
                               fontSize: 20.0,
                               color: Color.fromARGB(255, 80, 120, 194)),
                         ),
-                        Text(
+                        const Text(
                           '을 추천해요',
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 17.0),
@@ -128,30 +163,30 @@ class _YearEndState extends State<YearEndGuide> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
+                        const Text(
                           '결제금액',
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 17.0),
                         ),
                         Text(
-                          '16,250,000 원',
-                          style: TextStyle(
+                          '$tmpExcessAmount 원',
+                          style: const TextStyle(
                               fontFamily: 'PretendardBold', fontSize: 20.0),
                         ),
-                        Text(
+                        const Text(
                           '초과부터 카드소득공제를 받을 수 있어요',
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 17.0),
                         ),
-                        Text(
+                        const Text(
                           '',
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 13.0),
                         ),
-                        Text(
+                        const Text(
                           '※ 연소득의 25%까지는 혜택이 높은 신용카드 사용을 추천합니다.',
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 13.0),
