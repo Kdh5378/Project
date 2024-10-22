@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-
 class YearEndGuide extends StatefulWidget {
   const YearEndGuide({Key? key}) : super(key: key);
 
@@ -13,14 +12,14 @@ class YearEndGuide extends StatefulWidget {
 class _YearEndState extends State<YearEndGuide> {
   final TextEditingController textController = new TextEditingController();
   var f = NumberFormat('###,###,###,###');
-  
-  var mySalary        = 60000000;
-  var tmpMySalary     = '60,000,000';
-  var myCreditAmount  = 4000000;
-  var tmpMyCredit     = '4,000,000';
-  var usedAmount      = 11000000;
-  var exessAmount     = 15000000;
-  var tmpExcessAmount = '15,000,000';
+
+  num    mySalary          = 60000000;
+  String tmpMySalary       = '60,000,000';
+  num    myCreditAmount    = 4000000;
+  String tmpMyCreditAmount = '4,000,000';
+  num    usedAmount        = 11000000;
+  num    exessAmount       = 15000000;
+  String tmpExcessAmount  = '15,000,000';
 
   @override
   Widget build(BuildContext context) {
@@ -55,24 +54,27 @@ class _YearEndState extends State<YearEndGuide> {
                           fontFamily: 'PretendardBold', fontSize: 18.0),
                     ),
                   ),
-                  Text('$tmpMySalary 원',
-                  style: const TextStyle(
-                          fontFamily: 'PretendardExtraBold', fontSize: 30.0),),
+                  Text(
+                    '$tmpMySalary 원',
+                    style: const TextStyle(
+                        fontFamily: 'PretendardExtraBold', fontSize: 30.0),
+                  ),
                   TextField(
                     controller: textController,
                     decoration: const InputDecoration(
-                        labelText: '연봉',
-                        labelStyle: TextStyle(fontFamily: 'PretendardRegular'),
-                        contentPadding:
-                            EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color.fromARGB(255, 80, 120, 194)), // 동적 border 색상
-                              ),
-                     ),
-                     keyboardType: TextInputType.number,
-                     inputFormatters: <TextInputFormatter>[
+                      labelText: '연봉',
+                      labelStyle: TextStyle(fontFamily: 'PretendardRegular'),
+                      contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(
+                                255, 80, 120, 194)), // 동적 border 색상
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
-                     ],
+                    ],
                   ),
                   const SizedBox(
                     width: 60.0,
@@ -81,12 +83,12 @@ class _YearEndState extends State<YearEndGuide> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        mySalary        = int.parse(textController.text);
-                        tmpMySalary     = f.format(mySalary);
-                        exessAmount     = (mySalary*0.25) as int;
-                        myCreditAmount  = exessAmount - usedAmount;
-                        tmpMyCredit     = f.format(myCreditAmount);
-                        tmpExcessAmount = f.format(exessAmount);
+                        mySalary          = num.parse(textController.text);
+                        tmpMySalary       = f.format(mySalary);
+                        exessAmount       = mySalary * 0.25;
+                        myCreditAmount    = exessAmount - usedAmount;
+                        tmpMyCreditAmount = f.format(myCreditAmount);
+                        tmpExcessAmount   = f.format(exessAmount);
                       });
                       debugPrint('조회페이지로 이동');
                     },
@@ -130,18 +132,28 @@ class _YearEndState extends State<YearEndGuide> {
                           style: TextStyle(
                               fontFamily: 'PretendardRegular', fontSize: 17.0),
                         ),
-                        Text(
-                          '$tmpMyCredit 원',
-                          style: const TextStyle(
-                              fontFamily: 'PretendardBold', fontSize: 22.0),
-                        ),
-                        const Text(
-                          '신용카드 사용',
-                          style: TextStyle(
-                              fontFamily: 'PretendardBold',
-                              fontSize: 20.0,
-                              color: Color.fromARGB(255, 80, 120, 194)),
-                        ),
+                        if (myCreditAmount > 0)
+                          Text(
+                            '$tmpMyCreditAmount 원',
+                            style: const TextStyle(
+                                fontFamily: 'PretendardBold', fontSize: 22.0),
+                          ),
+                        if (myCreditAmount > 0)
+                          const Text(
+                            '신용카드 사용',
+                            style: TextStyle(
+                                fontFamily: 'PretendardBold',
+                                fontSize: 20.0,
+                                color: Color.fromARGB(255, 80, 120, 194)),
+                          )
+                        else
+                          const Text(
+                            '체크카드 사용',
+                            style: TextStyle(
+                                fontFamily: 'PretendardBold',
+                                fontSize: 20.0,
+                                color: Color.fromARGB(255, 47, 112, 38)),
+                          ),
                         const Text(
                           '을 추천해요',
                           style: TextStyle(
