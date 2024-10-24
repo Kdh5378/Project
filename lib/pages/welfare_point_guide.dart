@@ -20,8 +20,35 @@ String pointUsed4Text     = '';
 String pointOver4Text     = '';
 String deficitAmount4Text = '';
 
-class WelFarePoint extends StatelessWidget {
+class WelFarePoint extends StatefulWidget {
   const WelFarePoint({super.key});
+
+  @override
+  _WelFarePointState createState() => _WelFarePointState();
+}
+
+
+
+class _WelFarePointState extends State<WelFarePoint>  {
+  List<Map<String, dynamic>> history = [];
+  bool isHistoryVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 더미 데이터를 초기화합니다.
+    history = [
+      {'date': '2024-10-01', 'amount': 1000000, 'businessName': '카페 A'},
+      {'date': '2024-10-05', 'amount': 500000, 'businessName': '식당 B'},
+      {'date': '2024-10-10', 'amount': 700000, 'businessName': '마트 C'},
+    ];
+  }
+
+  void _toggleHistoryVisibility() {
+    setState(() {
+      isHistoryVisible = !isHistoryVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -268,9 +295,7 @@ class WelFarePoint extends StatelessWidget {
                   height: 20,
                 ),
                 InkWell(
-                  onTap: () {
-                    debugPrint('조회페이지로 이동');
-                  },
+                  onTap: _toggleHistoryVisibility,
                   child: Container(
                       width: 330.0,
                       decoration: BoxDecoration(
@@ -288,6 +313,67 @@ class WelFarePoint extends StatelessWidget {
                             color: Color.fromARGB(255, 255, 255, 255)),
                         textAlign: TextAlign.center,
                       )),
+                ),
+                // 사용 내역 목록 표시
+              // 사용 내역 목록 표시
+              if (isHistoryVisible)
+                Container(
+                  margin: const EdgeInsets.only(top: 20.0),
+                  width: 380,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: history.length,
+                    itemBuilder: (context, index) {
+                      final item = history[index];
+                      return Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item['businessName'],
+                                      style: const TextStyle(
+                                          fontFamily: 'PretendardBold',
+                                          fontSize: 14.0),
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    Text(
+                                      item['date'],
+                                      style: const TextStyle(
+                                          fontFamily: 'PretendardRegular',
+                                          fontSize: 12.0),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${getNumToStr(item['amount'])} 원',
+                                  style: const TextStyle(
+                                      fontFamily: 'PretendardBold',
+                                      fontSize: 14.0),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (index < history.length - 1)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Divider(color: Color.fromARGB(255, 200, 200, 200)), // 연한 회색 선
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ],
             )
