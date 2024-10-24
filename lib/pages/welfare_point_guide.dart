@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+var f = NumberFormat('###,###,###,###');
+
+num totalPoint      = 0;
+num pointLeft       = 0;
+num pointUsed       = 0;
+num totalRevenue4   = 0;
+num pointUsed4      = 0;
+num pointOver4      = 0;
+num requiredAmount4 = 0;
+num deficitAmount4  = 0;
+
+String totalPointText     = '';
+String pointLeftText      = '';
+String pointUsedText      = '';
+String totalRevenue4Text  = '';
+String pointUsed4Text     = '';
+String pointOver4Text     = '';
+String deficitAmount4Text = '';
 
 class WelFarePoint extends StatelessWidget {
   const WelFarePoint({super.key});
 
   @override
   Widget build(BuildContext context) {
+    setPointText();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 235, 231, 231),
       appBar: AppBar(
@@ -30,29 +51,34 @@ class WelFarePoint extends StatelessWidget {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  const Text(
-                    '잔여포인트 : 1,400,000',
+                  Text(
+                    '잔여포인트 : $pointLeftText',
                     style:
-                        TextStyle(fontFamily: 'PretendardBold', fontSize: 18.0),
+                        const TextStyle(fontFamily: 'PretendardBold', fontSize: 18.0),
                     textAlign: TextAlign.left,
                   ),
                   const SizedBox(
                     height: 20.0,
                   ),
-                  Container(
-                    height: 10.0,
-                    width: 330.0,
-                    decoration: BoxDecoration(
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                      height: 13.0,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
-                        color: const Color.fromARGB(255, 212, 208, 208)),
-                    child: Container(
-                      width: 10,
-                      margin: const EdgeInsets.fromLTRB(0.0, 0.0, 40.0, 0.0),
+                        color: const Color.fromARGB(255, 212, 208, 208),
+                      ),
+                    ),
+                    Container(
+                      height: 13.0,
+                      width: MediaQuery.of(context).size.width * 0.6 * pointUsed / totalPoint,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
                         color: const Color.fromARGB(255, 80, 120, 194),
                       ),
                     ),
+                    ],
                   ),
                   Row(
                     children: <Widget>[
@@ -67,8 +93,8 @@ class WelFarePoint extends StatelessWidget {
                           color: Color.fromARGB(255, 80, 120, 194),
                         ),
                       ),
-                      const Text('사용포인트             3,400,000',
-                          style: TextStyle(fontFamily: 'PretendardBold')),
+                      Text('사용포인트             $pointUsedText',
+                          style: const TextStyle(fontFamily: 'PretendardBold')),
                       const SizedBox(
                         height: 10.0,
                       ),
@@ -87,8 +113,8 @@ class WelFarePoint extends StatelessWidget {
                           color: Color.fromARGB(255, 212, 208, 208),
                         ),
                       ),
-                      const Text('총 배정포인트        4,800,000',
-                          style: TextStyle(fontFamily: 'PretendardBold')),
+                      Text('총 배정포인트        $totalPointText',
+                          style: const TextStyle(fontFamily: 'PretendardBold')),
                     ],
                   ),
                   const SizedBox(
@@ -111,25 +137,33 @@ class WelFarePoint extends StatelessWidget {
                           width: 3),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
+                        const Text(
                           '분기 실적 충족 여부 : ',
                           style: TextStyle(
                               fontFamily: 'PretendardSemiBold', fontSize: 15.0),
                         ),
+                        if(deficitAmount4 > 0)
                         Text(
-                          '500,000원',
-                          style: TextStyle(
+                          '$deficitAmount4Text 원',
+                          style: const TextStyle(
                               fontFamily: 'PretendardExtraBold',
                               fontSize: 15.0,
                               color: Color.fromARGB(255, 194, 40, 40)),
                         ),
-                        Text(
+                        if(deficitAmount4 > 0)
+                        const Text(
                           ' 부족',
                           style: TextStyle(
                               fontFamily: 'PretendardSemiBold', fontSize: 15.0),
+                        ),
+                        if(deficitAmount4 <= 0)
+                        const Text(
+                          '충족',
+                          style: TextStyle(
+                              fontFamily: 'PretendardExtraBold', fontSize: 15.0),
                         )
                       ],
                     )),
@@ -156,21 +190,25 @@ class WelFarePoint extends StatelessWidget {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      Container(
-                        height: 10.0,
-                        width: 330.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: const Color.fromARGB(255, 212, 208, 208)),
-                        child: Container(
-                          width: 10,
-                          margin:
-                              const EdgeInsets.fromLTRB(0.0, 0.0, 220.0, 0.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: const Color.fromARGB(255, 80, 120, 194),
-                          ),
-                        ),
+                      Stack(
+                        children: <Widget>[
+                          Container(
+                            height: 13.0,
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: const Color.fromARGB(255, 212, 208, 208),
+                              ),
+                              ),
+                           Container(
+                            height: 13.0,
+                            width: MediaQuery.of(context).size.width * 0.6 * pointOver4 / totalRevenue4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: const Color.fromARGB(255, 80, 120, 194),
+                              ),
+                            )
+                        ],
                       ),
                       Row(
                         children: <Widget>[
@@ -185,9 +223,9 @@ class WelFarePoint extends StatelessWidget {
                               color: Color.fromARGB(255, 212, 208, 208),
                             ),
                           ),
-                          const Text(
-                              '총 매출액(A)                            1,400,000 원',
-                              style: TextStyle(fontFamily: 'PretendardRegular')),
+                          Text(
+                              '총 매출액(A)                            $totalRevenue4Text 원',
+                              style: const TextStyle(fontFamily: 'PretendardRegular')),
                         ],
                       ),
                       Row(
@@ -199,8 +237,8 @@ class WelFarePoint extends StatelessWidget {
                             width: 70.0,
                             height: 10.0,
                           ),
-                          const Text('포인트 사용 금액(B)                 1,200,000 원',
-                              style: TextStyle(fontFamily: 'PretendardRegular')),
+                          Text('포인트 사용 금액(B)                 $pointUsed4Text 원',
+                              style: const TextStyle(fontFamily: 'PretendardRegular')),
                         ],
                       ),
                       Row(
@@ -216,8 +254,8 @@ class WelFarePoint extends StatelessWidget {
                               color: Color.fromARGB(255, 80, 120, 194),
                             ),
                           ),
-                          const Text('분기 실적 충족 금액(A-B)          200,000 원',
-                              style: TextStyle(fontFamily: 'PretendardBold')),
+                          Text('분기 실적 충족 금액(A-B)         $pointOver4Text 원',
+                              style: const TextStyle(fontFamily: 'PretendardBold')),
                         ],
                       ),
                       const SizedBox(
@@ -258,4 +296,27 @@ class WelFarePoint extends StatelessWidget {
       )),
     );
   }
+}
+
+String getNumToStr(num tmpNum){
+  return f.format(tmpNum);
+}
+
+void setPointText(){
+  totalPoint      = 4800000;
+  pointUsed       = 3400000;
+  pointLeft       = totalPoint - pointUsed;
+  totalRevenue4   = 1400000;
+  pointUsed4      = 1200000;
+  pointOver4      = totalRevenue4 - pointUsed4;
+  requiredAmount4 = 700000;
+  deficitAmount4  = requiredAmount4 - pointOver4;
+
+  totalPointText     = getNumToStr(totalPoint);
+  pointUsedText      = getNumToStr(pointUsed);
+  pointLeftText      = getNumToStr(pointLeft);
+  totalRevenue4Text  = getNumToStr(totalRevenue4);
+  pointUsed4Text     = getNumToStr(pointUsed4);
+  pointOver4Text     = getNumToStr(pointOver4);
+  deficitAmount4Text = getNumToStr(deficitAmount4);
 }
