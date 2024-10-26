@@ -214,7 +214,7 @@ class _MapState extends State<MapGuide> {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 500,
+            height: double.infinity,
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: _currentPosition,
