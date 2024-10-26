@@ -263,9 +263,9 @@ class _MapState extends State<MapGuide> {
                 ElevatedButton(
                   onPressed: () {
                     // 주유소 필터링
-                    _filterPlaces('gas station');
+                    _filterPlaces('gas_station');
                     setState(() {
-                      _placeType = 'gas station';
+                      _placeType = 'gas_station';
                     });
                   },
                   child: const Text('주유소'),
