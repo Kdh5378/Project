@@ -39,16 +39,12 @@ dependencies:
   cloud_firestore: ^5.3.0
   google_maps_flutter: ^2.9.0
   intl: ^0.19.0
-<<<<<<< HEAD
   geolocator: ^9.0.2
   location: ^5.0.0
   google_maps_flutter_web: ^0.5.10
   geocoding: ^2.0.5
   http: ^0.13.5
   
-=======
-  flutter_native_splash: ^2.4.2
->>>>>>> 305106ddf98833b96cb0b943db52b92d45a2cd2c
 
 dev_dependencies:
   flutter_test:
