@@ -1,10 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:card_upgo_run/pages/map_guide.dart';
 import 'package:card_upgo_run/pages/year_end_guide.dart';
 import 'package:card_upgo_run/pages/welfare_point_guide.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
+
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  String storeName = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStoreName();
+  }
+
+  Future<void> fetchStoreName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> document = await FirebaseFirestore.instance
+          .collection('store-info')
+          .doc('storeId1')
+          .get();
+
+      if (document.exists && document.data() != null) {
+        setState(() {
+          storeName = document.data()!['name'];
+        });
+      } else {
+        setState(() {
+          storeName = 'No data found';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        storeName = 'Error fetching data';
+      });
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +76,15 @@ class MainPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text(
+                'Store Name: $storeName',  // Firestore에서 가져온 데이터를 표시하는 부분
+                style: const TextStyle(
+                  fontFamily: 'PretendardSemiBold',
+                  fontSize: 25.0,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 20),
               Column(
                 children: [
                   SizedBox(
