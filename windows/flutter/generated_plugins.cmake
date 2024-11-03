@@ -6,7 +6,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
   firebase_core
   geolocator_windows
+<<<<<<< HEAD
   serious_python_windows
+=======
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

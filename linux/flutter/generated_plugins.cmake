@@ -3,7 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+<<<<<<< HEAD
   serious_python_linux
+=======
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

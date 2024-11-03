@@ -468,4 +468,8 @@ class _MyReportPage extends State<MyReportPage> {
   String getNumToStr(num number) {
     return f.format(number);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6

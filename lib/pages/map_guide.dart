@@ -15,8 +15,21 @@ class MapGuide extends StatefulWidget {
 class CardInfo {
   final String cardName;
   final String cardBenefit;
+<<<<<<< HEAD
 
   CardInfo({required this.cardName, required this.cardBenefit});
+=======
+  final String restaurantRank;
+  final String cafeRank;
+  final String gasstationRank;
+
+  CardInfo(
+      {required this.cardName,
+      required this.cardBenefit,
+      required this.restaurantRank,
+      required this.cafeRank,
+      required this.gasstationRank});
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
 
   // Firestore 데이터를 CardInfo 객체로 변환
   factory CardInfo.fromFirestore(DocumentSnapshot doc) {
@@ -24,6 +37,12 @@ class CardInfo {
     return CardInfo(
       cardName: data['cardName'] ?? '',
       cardBenefit: data['cardBenefit'] ?? '',
+<<<<<<< HEAD
+=======
+      restaurantRank: data['restaurantRank'] ?? '',
+      cafeRank: data['cafeRank'] ?? '',
+      gasstationRank: data['gasstationRank'] ?? '',
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
     );
   }
 }
@@ -49,7 +68,17 @@ class _MapState extends State<MapGuide> {
   LatLng? _selectedLocation;
   String _placeName = 'Tap on the map to get location name'; // 초기 상태
   Position? position;
+<<<<<<< HEAD
   String _placeType = 'restaurant'; // 기본 값으로 음식점 설정
+=======
+  final List<String> _places = [
+    'restaurant',
+    'cafe',
+    'gas_station'
+  ]; // 기본 값으로 음식점 설정
+
+  String _placeType = 'restaurant';
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
   Set<Marker> _markers = {};
   late Future<List<CardInfo>> _cardInfoFuture; // Firestore 데이터 저장할 변수
 
@@ -65,6 +94,10 @@ class _MapState extends State<MapGuide> {
 
   // 현재 위치 가져오기
   Future<void> _getCurrentLocation() async {
+<<<<<<< HEAD
+=======
+    LocationPermission permission = await Geolocator.requestPermission();
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
@@ -79,7 +112,11 @@ class _MapState extends State<MapGuide> {
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
         '?location=${position.latitude},${position.longitude}'
         '&radius=100' // 100m 반경 내 검색
+<<<<<<< HEAD
         '&type=$_placeType' // 식당 유형 필터
+=======
+        '&type=${_places.join("|")}' // 식당 유형 필터
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
         '&key=$apiKey';
 
     try {
@@ -156,6 +193,37 @@ class _MapState extends State<MapGuide> {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // rank 필드를 결정하는 메서드
+  String getRankField(String type) {
+    switch (type) {
+      case 'restaurant':
+        return 'restaurantRank';
+      case 'cafe':
+        return 'cafeRank';
+      case 'gas_station':
+        return 'gasstationRank';
+      default:
+        return 'restaurantRank'; // 기본값 설정
+    }
+  }
+
+// 선택된 카드의 rank 값을 가져오는 메서드
+  String getRankValue(CardInfo card) {
+    switch (_placeType) {
+      case 'restaurant':
+        return card.restaurantRank;
+      case 'cafe':
+        return card.cafeRank;
+      case 'gas_station':
+        return card.gasstationRank;
+      default:
+        return card.restaurantRank; // 기본값 설정
+    }
+  }
+
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
   // 바텀 시트를 표시하는 메서드 (Firestore 데이터를 사용)
   void _showPlaceNameBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -188,6 +256,10 @@ class _MapState extends State<MapGuide> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('cardInfo')
+<<<<<<< HEAD
+=======
+                        .orderBy(getRankField(_placeType)) // rank 필드로 정렬
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -208,7 +280,11 @@ class _MapState extends State<MapGuide> {
                         itemBuilder: (context, index) {
                           final card = cardInfos[index];
                           return ListTile(
+<<<<<<< HEAD
                             leading: const Icon(Icons.card_giftcard),
+=======
+                            leading: Text(getRankValue(card)),
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
                             title: Text(card.cardName),
                             subtitle: Text(
                               card.cardBenefit,
@@ -236,7 +312,11 @@ class _MapState extends State<MapGuide> {
         title: const Center(
           child: Text(
             '지도에서 혜택찾기',
+<<<<<<< HEAD
             style: TextStyle(fontFamily: 'PretendardLight'),
+=======
+            style: TextStyle(fontFamily: 'PretendardBold'),
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
           ),
         ),
       ),
@@ -276,6 +356,16 @@ class _MapState extends State<MapGuide> {
                       _placeType = 'restaurant';
                     });
                   },
+<<<<<<< HEAD
+=======
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
                   child: const Text('음식점'),
                 ),
                 const SizedBox(width: 10), // 사이 공간 추가
@@ -287,6 +377,16 @@ class _MapState extends State<MapGuide> {
                       _placeType = 'cafe';
                     });
                   },
+<<<<<<< HEAD
+=======
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
                   child: const Text('카페'),
                 ),
                 const SizedBox(width: 10), // 사이 공간 추가
@@ -298,6 +398,16 @@ class _MapState extends State<MapGuide> {
                       _placeType = 'gas_station';
                     });
                   },
+<<<<<<< HEAD
+=======
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
                   child: const Text('주유소'),
                 ),
                 // 필요에 따라 더 많은 버튼 추가
@@ -308,7 +418,11 @@ class _MapState extends State<MapGuide> {
           Positioned(
             bottom: 20,
             left: 0,
+<<<<<<< HEAD
             right: 0,
+=======
+            right: 40,
+>>>>>>> 98066d2929e3855b1c5f4e5d803cbcd7980e74e6
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Container(
