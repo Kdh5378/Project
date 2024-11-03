@@ -1,8 +1,10 @@
+import 'package:card_upgo_run/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MapGuide extends StatefulWidget {
   const MapGuide({super.key});
@@ -18,7 +20,7 @@ class _MapState extends State<MapGuide> {
   LatLng? _selectedLocation;
   String _placeName = 'Tap on the map to get location name'; // 초기 상태
   Position? position;
-  String _placeType = 'restaurant'; // 기본 값으로 음식점 설정
+  String _placeType = ''; // 기본 값으로 음식점 설정
   Set<Marker> _markers = {};
 
   final String apiKey =
@@ -199,6 +201,16 @@ class _MapState extends State<MapGuide> {
     );
   }
 
+  //READ 컬렉션 내 모든 데이터를 가져올때
+  Future<List<CardModel>> getFireModels() async {
+    List<CardModel> mottos = [];
+    for (var doc in querySnapshot.docs) {
+      CardModel fireModel = CardModel.fromQuerySnapshot(doc);
+      mottos.add(fireModel);
+    }
+    return mottos;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -214,7 +226,7 @@ class _MapState extends State<MapGuide> {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 500,
+            height: double.infinity,
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: _currentPosition,
