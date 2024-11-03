@@ -15,8 +15,16 @@ class MapGuide extends StatefulWidget {
 class CardInfo {
   final String cardName;
   final String cardBenefit;
+  final String restaurantRank;
+  final String cafeRank;
+  final String gasstationRank;
 
-  CardInfo({required this.cardName, required this.cardBenefit});
+  CardInfo(
+      {required this.cardName,
+      required this.cardBenefit,
+      required this.restaurantRank,
+      required this.cafeRank,
+      required this.gasstationRank});
 
   // Firestore 데이터를 CardInfo 객체로 변환
   factory CardInfo.fromFirestore(DocumentSnapshot doc) {
@@ -24,6 +32,9 @@ class CardInfo {
     return CardInfo(
       cardName: data['cardName'] ?? '',
       cardBenefit: data['cardBenefit'] ?? '',
+      restaurantRank: data['restaurantRank'] ?? '',
+      cafeRank: data['cafeRank'] ?? '',
+      gasstationRank: data['gasstationRank'] ?? '',
     );
   }
 }
@@ -49,7 +60,13 @@ class _MapState extends State<MapGuide> {
   LatLng? _selectedLocation;
   String _placeName = 'Tap on the map to get location name'; // 초기 상태
   Position? position;
-  String _placeType = 'restaurant'; // 기본 값으로 음식점 설정
+  final List<String> _places = [
+    'restaurant',
+    'cafe',
+    'gas_station'
+  ]; // 기본 값으로 음식점 설정
+
+  String _placeType = 'restaurant';
   Set<Marker> _markers = {};
   late Future<List<CardInfo>> _cardInfoFuture; // Firestore 데이터 저장할 변수
 
@@ -79,7 +96,7 @@ class _MapState extends State<MapGuide> {
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
         '?location=${position.latitude},${position.longitude}'
         '&radius=100' // 100m 반경 내 검색
-        '&type=$_placeType' // 식당 유형 필터
+        '&type=${_places.join("|")}' // 식당 유형 필터
         '&key=$apiKey';
 
     try {
@@ -156,6 +173,34 @@ class _MapState extends State<MapGuide> {
     }
   }
 
+  // rank 필드를 결정하는 메서드
+  String getRankField(String type) {
+    switch (type) {
+      case 'restaurant':
+        return 'restaurantRank';
+      case 'cafe':
+        return 'cafeRank';
+      case 'gas_station':
+        return 'gasstationRank';
+      default:
+        return 'restaurantRank'; // 기본값 설정
+    }
+  }
+
+// 선택된 카드의 rank 값을 가져오는 메서드
+  String getRankValue(CardInfo card) {
+    switch (_placeType) {
+      case 'restaurant':
+        return card.restaurantRank;
+      case 'cafe':
+        return card.cafeRank;
+      case 'gas_station':
+        return card.gasstationRank;
+      default:
+        return card.restaurantRank; // 기본값 설정
+    }
+  }
+
   // 바텀 시트를 표시하는 메서드 (Firestore 데이터를 사용)
   void _showPlaceNameBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -188,6 +233,7 @@ class _MapState extends State<MapGuide> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('cardInfo')
+                        .orderBy(getRankField(_placeType)) // rank 필드로 정렬
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -208,7 +254,7 @@ class _MapState extends State<MapGuide> {
                         itemBuilder: (context, index) {
                           final card = cardInfos[index];
                           return ListTile(
-                            leading: const Icon(Icons.card_giftcard),
+                            leading: Text(getRankValue(card)),
                             title: Text(card.cardName),
                             subtitle: Text(
                               card.cardBenefit,
