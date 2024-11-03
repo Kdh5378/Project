@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "318860834514",
+    "project_id": "card-upgo-run",
+    "storage_bucket": "card-upgo-run.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318860834514:android:42eb0b2b59499bbb361f0b",
+        "android_client_info": {
+          "package_name": "com.example.card_upgo_run"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWzACQfpHDmbMETU9UoM2VnyW2D76X6Ck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
