@@ -82,6 +82,7 @@ class _MapState extends State<MapGuide> {
 
   // 현재 위치 가져오기
   Future<void> _getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
@@ -282,7 +283,7 @@ class _MapState extends State<MapGuide> {
         title: const Center(
           child: Text(
             '지도에서 혜택찾기',
-            style: TextStyle(fontFamily: 'PretendardLight'),
+            style: TextStyle(fontFamily: 'PretendardBold'),
           ),
         ),
       ),
@@ -322,6 +323,13 @@ class _MapState extends State<MapGuide> {
                       _placeType = 'restaurant';
                     });
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   child: const Text('음식점'),
                 ),
                 const SizedBox(width: 10), // 사이 공간 추가
@@ -333,6 +341,13 @@ class _MapState extends State<MapGuide> {
                       _placeType = 'cafe';
                     });
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   child: const Text('카페'),
                 ),
                 const SizedBox(width: 10), // 사이 공간 추가
@@ -344,6 +359,13 @@ class _MapState extends State<MapGuide> {
                       _placeType = 'gas_station';
                     });
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                   child: const Text('주유소'),
                 ),
                 // 필요에 따라 더 많은 버튼 추가
@@ -354,7 +376,7 @@ class _MapState extends State<MapGuide> {
           Positioned(
             bottom: 20,
             left: 0,
-            right: 0,
+            right: 40,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Container(
