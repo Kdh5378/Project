@@ -9,17 +9,73 @@ class MyReportPage extends StatefulWidget {
   _MyReportPage createState() => _MyReportPage();
 }
 
+var f = NumberFormat('###,###,###,###');
+
 class _MyReportPage extends State<MyReportPage> {
   final TextEditingController textController = new TextEditingController();
-  var f = NumberFormat('###,###,###,###');
 
-  num    savedMoney       = 1000000;
-  String tmpSavedMoney    = '1,000,000';
-  num    maxMoney         = 1200000;
-  String tmpMaxMoney      = '1,200,000';
-  num    myPercent        = 85;
-  num    maxSavedMoney    = 200000;
+  num savedMoney = 1000000;
+  String tmpSavedMoney = '1,000,000';
+  num maxMoney = 1200000;
+  String tmpMaxMoney = '1,200,000';
+  num myPercent = 85;
+  num maxSavedMoney = 200000;
   String tmpMaxSavedMoney = '200,000';
+
+  List<Map<String, dynamic>> paymentHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // 더미 데이터 초기화
+    paymentHistory = [
+      {
+        'storeName': '카페 A',
+        'paymentDate': '2024-10-01',
+        'paymentAmount': 1000000,
+        'usedCard': '신용카드 1',
+        'discountFromUsedCard': 50000,
+        'recommendedCard': '신용카드 2',
+        'discountFromRecommendedCard': 30000,
+      },
+      {
+        'storeName': '식당 B',
+        'paymentDate': '2024-10-05',
+        'paymentAmount': 500000,
+        'usedCard': '신용카드 3',
+        'discountFromUsedCard': 20000,
+        'recommendedCard': '신용카드 4',
+        'discountFromRecommendedCard': 10000,
+      },
+      {
+        'storeName': '식당 C',
+        'paymentDate': '2024-10-05',
+        'paymentAmount': 500000,
+        'usedCard': '신용카드 3',
+        'discountFromUsedCard': 20000,
+        'recommendedCard': '신용카드 4',
+        'discountFromRecommendedCard': 10000,
+      },
+      {
+        'storeName': '식당 D',
+        'paymentDate': '2024-10-05',
+        'paymentAmount': 500000,
+        'usedCard': '신용카드 3',
+        'discountFromUsedCard': 20000,
+        'recommendedCard': '신용카드 4',
+        'discountFromRecommendedCard': 10000,
+      },
+      {
+        'storeName': '식당 E',
+        'paymentDate': '2024-10-05',
+        'paymentAmount': 500000,
+        'usedCard': '신용카드 3',
+        'discountFromUsedCard': 20000,
+        'recommendedCard': '신용카드 4',
+        'discountFromRecommendedCard': 10000,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,16 +188,18 @@ class _MyReportPage extends State<MyReportPage> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 30.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       const Text(
                         '카드 혜택으로\n절약한 금액',
                         style: TextStyle(
                             fontFamily: 'PretendardRegular', fontSize: 17.0),
                       ),
+                      const SizedBox(height: 5),
                       Text(
                         '$tmpSavedMoney 원',
                         style: const TextStyle(
-                            fontFamily: 'PretendardBold', fontSize: 20.0),
+                            fontFamily: 'PretendardBold', fontSize: 22.0),
                       ),
                     ],
                   ),
@@ -149,17 +207,20 @@ class _MyReportPage extends State<MyReportPage> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 30.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       const Text(
-                        '최대절약\n가능한 금액',
+                        '최대 절약\n가능한 금액',
                         style: TextStyle(
                             fontFamily: 'PretendardRegular', fontSize: 17.0),
                       ),
+                      const SizedBox(height: 5),
                       Text(
                         '$tmpMaxMoney 원',
                         style: const TextStyle(
-                            fontFamily: 'PretendardBold', fontSize: 20.0),
+                            fontFamily: 'PretendardBold', fontSize: 22.0),
                       ),
+                      const SizedBox(height: 5),
                     ],
                   ),
                 ),
@@ -191,27 +252,163 @@ class _MyReportPage extends State<MyReportPage> {
                 ),
               ),
             ),
+            // 결제 내역 표시
             Align(
               alignment: Alignment.topLeft,
               child: Container(
-                padding: const EdgeInsets.fromLTRB(30.0, 30.0, 0.0, 0.0),
+                margin: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     const Text(
-                      '카드내역1',
+                      '카드 결제 내역',
                       style: TextStyle(
-                          fontFamily: 'PretendardRegular', fontSize: 17.0),
+                          fontFamily: 'PretendardBold', fontSize: 20.0),
                     ),
-                    const Text(
-                      '카드내역2',
-                      style: TextStyle(
-                          fontFamily: 'PretendardRegular', fontSize: 17.0),
+                    const SizedBox(height: 20),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('상세 내역',
+                                  style: TextStyle(
+                                      fontFamily: 'PretendardBold',
+                                      fontSize: 16.0)),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text('사용 카드',
+                                  style: TextStyle(
+                                      fontFamily: 'PretendardBold',
+                                      fontSize: 16.0)),
+                              Text('받은 할인',
+                                  style: TextStyle(
+                                      fontFamily: 'PretendardBold',
+                                      fontSize: 16.0)),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text('추천 카드',
+                                  style: TextStyle(
+                                      fontFamily: 'PretendardBold',
+                                      fontSize: 16.0)),
+                              Text('최대 할인',
+                                  style: TextStyle(
+                                      fontFamily: 'PretendardBold',
+                                      fontSize: 16.0)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const Text(
-                      '카드내역3',
-                      style: TextStyle(
-                          fontFamily: 'PretendardRegular', fontSize: 17.0),
+                    const SizedBox(height: 10),
+                    // 카드 결제 내역 리스트
+                    Container(
+                      /*
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200], // 연한 회색 배경
+                        //borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
+                        border: Border.all(color: const Color.fromARGB(255, 255, 255, 255)), // 테두리 추가
+                      ),
+                      */
+                      child: SizedBox(
+                        height: 200,
+                        child: ListView.separated(
+                          itemCount: paymentHistory.length,
+                          separatorBuilder: (context, index) =>
+                              const Divider(color: Colors.grey),
+                          itemBuilder: (context, index) {
+                            final item = paymentHistory[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(item['storeName'],
+                                                style: const TextStyle(
+                                                    fontFamily:
+                                                        'PretendardRegular',
+                                                    fontSize: 16.0)),
+                                            Text(
+                                                '${getNumToStr(item['paymentAmount'])} 원',
+                                                style: const TextStyle(
+                                                    fontFamily:
+                                                        'PretendardRegular',
+                                                    fontSize: 16.0)),
+                                          ],
+                                        ),
+                                        Text(item['paymentDate'],
+                                            style: const TextStyle(
+                                                fontFamily: 'PretendardRegular',
+                                                fontSize: 14.0)),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text('${item['usedCard']}',
+                                            style: const TextStyle(
+                                                fontFamily: 'PretendardRegular',
+                                                fontSize: 14.0)),
+                                        Text(
+                                            '${getNumToStr(item['discountFromUsedCard'])} 원',
+                                            style: const TextStyle(
+                                                fontFamily: 'PretendardRegular',
+                                                fontSize: 14.0)),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text('${item['recommendedCard']}',
+                                            style: const TextStyle(
+                                                fontFamily: 'PretendardRegular',
+                                                fontSize: 14.0)),
+                                        Text(
+                                            '${getNumToStr(item['discountFromRecommendedCard'])} 원',
+                                            style: const TextStyle(
+                                                fontFamily: 'PretendardRegular',
+                                                fontSize: 14.0)),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -230,4 +427,8 @@ class _MyReportPage extends State<MyReportPage> {
       return const Color.fromARGB(255, 161, 157, 157);
     }
   }
+}
+
+String getNumToStr(num tmpNum) {
+  return f.format(tmpNum);
 }
