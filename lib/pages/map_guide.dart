@@ -1,4 +1,3 @@
-import 'package:card_upgo_run/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,6 +12,36 @@ class MapGuide extends StatefulWidget {
   _MapState createState() => _MapState();
 }
 
+class CardInfo {
+  final String cardName;
+  final String cardBenefit;
+
+  CardInfo({required this.cardName, required this.cardBenefit});
+
+  // Firestore 데이터를 CardInfo 객체로 변환
+  factory CardInfo.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return CardInfo(
+      cardName: data['cardName'] ?? '',
+      cardBenefit: data['cardBenefit'] ?? '',
+    );
+  }
+}
+
+Future<List<CardInfo>> fetchCardInfo() async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  try {
+    QuerySnapshot querySnapshot = await firestore.collection('cardInfo').get();
+    print('Data fetched: ${querySnapshot.docs}'); // 데이터를 콘솔에 출력
+    return querySnapshot.docs
+        .map((doc) => CardInfo.fromFirestore(doc))
+        .toList();
+  } catch (e) {
+    print("Error fetching data: $e");
+    return [];
+  }
+}
+
 class _MapState extends State<MapGuide> {
   GoogleMapController? _controller;
   LatLng _currentPosition =
@@ -20,24 +49,18 @@ class _MapState extends State<MapGuide> {
   LatLng? _selectedLocation;
   String _placeName = 'Tap on the map to get location name'; // 초기 상태
   Position? position;
-  String _placeType = ''; // 기본 값으로 음식점 설정
+  String _placeType = 'restaurant'; // 기본 값으로 음식점 설정
   Set<Marker> _markers = {};
+  late Future<List<CardInfo>> _cardInfoFuture; // Firestore 데이터 저장할 변수
 
   final String apiKey =
       'AIzaSyBwU2k7FAkYpAr0ajinUHsN3PZ2bBdwSYU'; // 여기에 API 키를 입력하세요.
-
-  final List<String> _places = [
-    'NH 패밀리 농협카드',
-    '현대 M 포인트 카드',
-    'KB 노리카드',
-    '토스페이 카드',
-    '카카오뱅크 체크카드',
-  ];
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+    _cardInfoFuture = fetchCardInfo(); // Firestore에서 데이터 가져오기
   }
 
   // 현재 위치 가져오기
@@ -133,14 +156,14 @@ class _MapState extends State<MapGuide> {
     }
   }
 
-  // 바텀 시트를 표시하는 메서드
+  // 바텀 시트를 표시하는 메서드 (Firestore 데이터를 사용)
   void _showPlaceNameBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.5, // 화면의 50% 높이로 설정
+          heightFactor: 0.5,
           child: Container(
             padding: const EdgeInsets.all(16.0),
             decoration: const BoxDecoration(
@@ -161,32 +184,37 @@ class _MapState extends State<MapGuide> {
                   style: TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 10),
-                // ListView 부분
                 Expanded(
-                  flex: 1,
-                  child: ListView.builder(
-                    itemCount: _places.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: const Icon(Icons.card_giftcard),
-                        title: Text(_places[index]),
-                        subtitle: const Text(
-                            '혜택 : 외식 3%, 서점 50%, 영화/문화 50%, 주유 3%',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.normal)),
-                        onTap: () {
-                          // 클릭 시 동작을 추가할 수 있음
-                          print('${_places[index]} tapped');
-                          AlertDialog alert = const AlertDialog(
-                            title: Text('NH 농협패밀리카드',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold)),
-                          );
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return alert;
-                            },
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('cardInfo')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text('Error loading data'));
+                      } else if (!snapshot.hasData ||
+                          snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text('No data available'));
+                      }
+
+                      final cardInfos = snapshot.data!.docs
+                          .map((doc) => CardInfo.fromFirestore(doc))
+                          .toList();
+
+                      return ListView.builder(
+                        itemCount: cardInfos.length,
+                        itemBuilder: (context, index) {
+                          final card = cardInfos[index];
+                          return ListTile(
+                            leading: const Icon(Icons.card_giftcard),
+                            title: Text(card.cardName),
+                            subtitle: Text(
+                              card.cardBenefit,
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.normal),
+                            ),
                           );
                         },
                       );
@@ -199,16 +227,6 @@ class _MapState extends State<MapGuide> {
         );
       },
     );
-  }
-
-  //READ 컬렉션 내 모든 데이터를 가져올때
-  Future<List<CardModel>> getFireModels() async {
-    List<CardModel> mottos = [];
-    for (var doc in querySnapshot.docs) {
-      CardModel fireModel = CardModel.fromQuerySnapshot(doc);
-      mottos.add(fireModel);
-    }
-    return mottos;
   }
 
   @override
